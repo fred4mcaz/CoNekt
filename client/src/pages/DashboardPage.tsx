@@ -116,21 +116,35 @@ export default function DashboardPage() {
         {loading && matches.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-xl text-gray-600">Finding your matches...</div>
+            <p className="text-sm text-gray-500 mt-2">This may take a moment...</p>
           </div>
         ) : matches.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
             <p className="text-xl text-gray-600 mb-4">
-              We're working on finding your matches.
+              No matches found yet.
             </p>
-            <p className="text-gray-500 mb-6">
-              Add more about yourself to help us connect you with amazing people!
+            <p className="text-gray-500 mb-2">
+              {error 
+                ? `Error: ${error}` 
+                : "There are no other users in the system to match with yet, or we couldn't generate matches at this time."}
             </p>
-            <button
-              onClick={() => navigate('/profile')}
-              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-            >
-              Complete Your Profile
-            </button>
+            <p className="text-gray-500 mb-6 text-sm">
+              Make sure you've completed at least 5 profile questions, and check back later when more people join!
+            </p>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => navigate('/profile')}
+                className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Complete Your Profile
+              </button>
+              <button
+                onClick={handleRefresh}
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

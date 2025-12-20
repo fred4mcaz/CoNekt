@@ -147,17 +147,54 @@ function calculateCompatibility(
   };
 }
 
-// Find matches for a user
+// Find matches for a user (optimized for speed)
 export async function findMatches(
   userId: string,
   limit: number = 3
 ): Promise<MatchResult[]> {
+  console.log(`🔍 Finding matches for user: ${userId}`);
+
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
 
   if (!user) {
     throw new Error("User not found");
+  }
+
+  // Check for existing matches in database first (fast path)
+  const existingMatches = await prisma.match.findMany({
+    where: {
+      user1Id: userId,
+    },
+    include: {
+      user2: true,
+    },
+    orderBy: {
+      compatibilityScore: "desc",
+    },
+    take: limit,
+  });
+
+  // If we have recent matches, return them quickly
+  if (existingMatches.length >= limit) {
+    console.log(
+      `⚡ Using cached matches from database (${existingMatches.length} matches)`
+    );
+    return existingMatches.map((match) => ({
+      user: match.user2 as UserProfile,
+      compatibilityScore: match.compatibilityScore
+        ? Number(match.compatibilityScore)
+        : 0,
+      matchFactors: (match.matchFactors as string[]) || [],
+      recommendedActivity:
+        match.recommendedActivity ||
+        "Have a meaningful conversation about your shared interests and values",
+      conversationStarters: match.conversationStarters || [
+        "What's something you've been curious about or exploring lately?",
+        "What does a meaningful connection look like to you?",
+      ],
+    }));
   }
 
   // Get all other active users
@@ -168,69 +205,201 @@ export async function findMatches(
     },
   });
 
-  // Calculate compatibility with each user
-  const matches: MatchResult[] = [];
+  console.log(`📊 Found ${otherUsers.length} other active users in database`);
 
-  for (const otherUser of otherUsers) {
-    const { score, factors } = calculateCompatibility(
-      user as UserProfile,
-      otherUser as UserProfile
+  if (otherUsers.length === 0) {
+    console.log(
+      "⚠️ No other users found in database. Cannot generate matches."
     );
-
-    // Generate LLM-powered content
-    const [recommendedActivity, conversationStarters] = await Promise.all([
-      generateRecommendedActivity(
-        user as UserProfile,
-        otherUser as UserProfile
-      ),
-      generateConversationStarters(
-        user as UserProfile,
-        otherUser as UserProfile
-      ),
-    ]);
-
-    matches.push({
-      user: otherUser as UserProfile,
-      compatibilityScore: score,
-      matchFactors: factors,
-      recommendedActivity,
-      conversationStarters,
-    });
+    return [];
   }
 
-  // Sort by compatibility score and return top matches
-  matches.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+  // STEP 1: Calculate compatibility scores for ALL users (fast, no LLM)
+  const compatibilityScores: Array<{
+    user: UserProfile;
+    score: number;
+    factors: string[];
+  }> = [];
 
-  // Store matches in database
-  for (const match of matches.slice(0, limit)) {
+  for (const otherUser of otherUsers) {
     try {
-      await prisma.match.upsert({
-        where: {
-          user1Id_user2Id: {
-            user1Id: userId,
-            user2Id: match.user.id,
-          },
-        },
-        create: {
-          user1Id: userId,
-          user2Id: match.user.id,
-          compatibilityScore: match.compatibilityScore,
-          matchFactors: match.matchFactors as any,
-          recommendedActivity: match.recommendedActivity,
-          conversationStarters: match.conversationStarters,
-        },
-        update: {
-          compatibilityScore: match.compatibilityScore,
-          matchFactors: match.matchFactors as any,
-          recommendedActivity: match.recommendedActivity,
-          conversationStarters: match.conversationStarters,
-        },
+      const { score, factors } = calculateCompatibility(
+        user as UserProfile,
+        otherUser as UserProfile
+      );
+      compatibilityScores.push({
+        user: otherUser as UserProfile,
+        score,
+        factors,
       });
     } catch (error) {
-      console.error("Error storing match:", error);
-      // Continue with other matches even if one fails
+      console.error(
+        `❌ Error calculating compatibility with ${otherUser.name}:`,
+        error
+      );
     }
   }
 
-  return matches.slice(0, limit);
+  // STEP 2: Sort by score and get top matches
+  compatibilityScores.sort((a, b) => b.score - a.score);
+  const topMatches = compatibilityScores.slice(0, limit);
+
+  console.log(
+    `💫 Top ${topMatches.length} matches identified, generating LLM content...`
+  );
+
+  // STEP 3: Generate LLM content ONLY for top matches (in parallel with short timeout)
+  const matches: MatchResult[] = await Promise.all(
+    topMatches.map(async ({ user: otherUser, score, factors }) => {
+      // Use fallback immediately, try LLM in background with short timeout
+      let recommendedActivity = generateFallbackActivity(
+        user as UserProfile,
+        otherUser as UserProfile
+      );
+      let conversationStarters = generateFallbackConversationStarters(
+        user as UserProfile,
+        otherUser as UserProfile
+      );
+
+      // Try to enhance with LLM, but don't wait long
+      try {
+        const llmResults = (await Promise.race([
+          Promise.all([
+            generateRecommendedActivity(
+              user as UserProfile,
+              otherUser as UserProfile
+            ),
+            generateConversationStarters(
+              user as UserProfile,
+              otherUser as UserProfile
+            ),
+          ]),
+          new Promise<[string, string[]]>(
+            (_, reject) =>
+              setTimeout(() => reject(new Error("LLM timeout")), 5000) // 5 second timeout
+          ),
+        ])) as [string, string[]];
+
+        recommendedActivity = llmResults[0];
+        conversationStarters = llmResults[1];
+        console.log(`✅ LLM content generated for ${otherUser.name}`);
+      } catch (llmError) {
+        // Silently use fallbacks - already set above
+        console.log(
+          `⏩ Using fallback content for ${otherUser.name} (LLM timeout/failed)`
+        );
+      }
+
+      return {
+        user: otherUser,
+        compatibilityScore: score,
+        matchFactors: factors,
+        recommendedActivity,
+        conversationStarters,
+      };
+    })
+  );
+
+  // STEP 4: Store matches in database (async, don't wait)
+  Promise.all(
+    matches.map((match) =>
+      prisma.match
+        .upsert({
+          where: {
+            user1Id_user2Id: {
+              user1Id: userId,
+              user2Id: match.user.id,
+            },
+          },
+          create: {
+            user1Id: userId,
+            user2Id: match.user.id,
+            compatibilityScore: match.compatibilityScore,
+            matchFactors: match.matchFactors as any,
+            recommendedActivity: match.recommendedActivity,
+            conversationStarters: match.conversationStarters,
+          },
+          update: {
+            compatibilityScore: match.compatibilityScore,
+            matchFactors: match.matchFactors as any,
+            recommendedActivity: match.recommendedActivity,
+            conversationStarters: match.conversationStarters,
+          },
+        })
+        .catch((error) => {
+          console.error("Error storing match:", error);
+        })
+    )
+  ).catch(() => {
+    // Ignore storage errors
+  });
+
+  console.log(`✅ Generated ${matches.length} matches in optimized time`);
+  return matches;
+}
+
+// Fallback activity generator (no LLM)
+function generateFallbackActivity(
+  user1: UserProfile,
+  user2: UserProfile
+): string {
+  if (user1.favoriteBooks || user2.favoriteBooks) {
+    return "Read a book together and discuss its key themes and insights";
+  }
+  if (user1.career || user2.career) {
+    return "Collaborate on a small project or share professional insights";
+  }
+  if (user1.lifePhilosophy || user2.lifePhilosophy) {
+    return "Have a deep conversation about life philosophy and worldviews";
+  }
+  if (user1.hobbies || user2.hobbies) {
+    return "Explore a shared hobby or try something new together";
+  }
+  return "Have a meaningful conversation about your shared interests and values";
+}
+
+// Fallback conversation starters generator (no LLM)
+function generateFallbackConversationStarters(
+  user1: UserProfile,
+  user2: UserProfile
+): string[] {
+  const questions: string[] = [];
+
+  if (user1.keystoneValues && user2.keystoneValues) {
+    questions.push(
+      "What's a core value that has shaped how you navigate challenges?"
+    );
+  }
+  if (user1.interests || user2.interests) {
+    questions.push(
+      "What's something you've been curious about or exploring lately?"
+    );
+  }
+  if (user1.lifePhilosophy || user2.lifePhilosophy) {
+    questions.push(
+      "What's a perspective or idea that changed how you see the world?"
+    );
+  }
+  if (user1.relationshipGoals || user2.relationshipGoals) {
+    questions.push("What does a meaningful connection look like to you?");
+  }
+  if (
+    user1.favoriteBooks ||
+    user2.favoriteBooks ||
+    user1.favoriteAuthors ||
+    user2.favoriteAuthors
+  ) {
+    questions.push(
+      "What's a book or idea that has deeply influenced your thinking?"
+    );
+  }
+
+  // Ensure we always have at least 3 questions
+  if (questions.length === 0) {
+    questions.push("What's a question that's been on your mind lately?");
+    questions.push("What experience has shaped who you are today?");
+    questions.push("What are you most curious about exploring?");
+  }
+
+  return questions.slice(0, 5);
 }

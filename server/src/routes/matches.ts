@@ -12,7 +12,13 @@ const router = express.Router();
 // Get top matches for current user
 router.get("/", authenticateToken, async (req: AuthRequest, res) => {
   try {
+    console.log(`📥 GET /matches - User ID: ${req.userId}`);
     const matches = await findMatches(req.userId!, 3);
+
+    if (matches.length === 0) {
+      console.log("⚠️ No matches found - returning empty array");
+      return res.json({ matches: [] });
+    }
 
     // Fetch full user profiles for each match
     const matchResults = await Promise.all(
@@ -38,6 +44,11 @@ router.get("/", authenticateToken, async (req: AuthRequest, res) => {
           },
         });
 
+        if (!user) {
+          console.error(`⚠️ User ${match.user.id} not found in database`);
+          return null;
+        }
+
         return {
           user,
           compatibilityScore: match.compatibilityScore,
@@ -48,10 +59,16 @@ router.get("/", authenticateToken, async (req: AuthRequest, res) => {
       })
     );
 
-    res.json({ matches: matchResults });
-  } catch (error) {
-    console.error("Get matches error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    // Filter out null results
+    const validMatches = matchResults.filter((m) => m !== null);
+    console.log(`✅ Returning ${validMatches.length} matches`);
+    res.json({ matches: validMatches });
+  } catch (error: any) {
+    console.error("❌ Get matches error:", error);
+    res.status(500).json({ 
+      error: "Internal server error",
+      message: error.message || "Failed to fetch matches"
+    });
   }
 });
 
