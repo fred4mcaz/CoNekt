@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                        String   @id @default(uuid()) @db.Uuid
+  name                      String   @db.VarChar(255)
+  email                     String   @unique @db.VarChar(255)
+  passwordHash              String   @map("password_hash") @db.VarChar(255)
+  
+  // Optional fields - all nullable, open-ended text
+  age                       Int?
+  gender                    String?  @db.Text
+  culturalUpbringing        String?  @map("cultural_upbringing") @db.Text
+  nationality               String?  @db.Text
+  location                  Json?
+  
+  career                    String?  @db.Text
+  industry                  String?  @db.Text
+  skills                    String?  @db.Text
+  experienceLevel           String?  @map("experience_level") @db.Text
+  careerGoals               String?  @map("career_goals") @db.Text
+  
+  favoriteBooks             String?  @map("favorite_books") @db.Text
+  favoriteAuthors           String?  @map("favorite_authors") @db.Text
+  favoriteMovies            String?  @map("favorite_movies") @db.Text
+  favoriteTvShows           String?  @map("favorite_tv_shows") @db.Text
+  favoriteSpeakers          String?  @map("favorite_speakers") @db.Text
+  hobbies                   String?  @db.Text
+  interests                 String?  @db.Text
+  
+  keystoneValues            String?  @map("keystone_values") @db.Text
+  lifePhilosophy            String?  @map("life_philosophy") @db.Text
+  whatImLookingFor          String?  @map("what_im_looking_for") @db.Text
+  
+  relationshipGoals         String?  @map("relationship_goals") @db.Text
+  preferredCommunicationStyle String? @map("preferred_communication_style") @db.Text
+  availability              String?  @db.Text
+  
+  profileCompleteness       Int      @default(0) @map("profile_completeness")
+  isActive                  Boolean  @default(true) @map("is_active")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
+  lastLogin                 DateTime? @map("last_login")
+  
+  // Relations
+  embeddings                UserEmbedding?
+  matchesAsUser1            Match[]  @relation("User1Matches")
+  matchesAsUser2            Match[]  @relation("User2Matches")
+  
+  @@map("users")
+  @@index([age])
+  @@index([isActive])
+}
+
+model UserEmbedding {
+  userId        String   @id @map("user_id") @db.Uuid
+  embedding     String?  @db.Text  // Store as JSON string for now, or use pgvector extension
+  modelVersion  String?  @map("model_version") @db.VarChar(50)
+  updatedAt     DateTime @updatedAt @default(now()) @map("updated_at")
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_embeddings")
+}
+
+model Match {
+  id                  String   @id @default(uuid()) @db.Uuid
+  user1Id             String   @map("user1_id") @db.Uuid
+  user2Id             String   @map("user2_id") @db.Uuid
+  compatibilityScore  Decimal? @map("compatibility_score") @db.Decimal(5, 4)
+  matchFactors        Json?    @map("match_factors")
+  recommendedActivity String?  @map("recommended_activity") @db.Text
+  conversationStarters String[] @map("conversation_starters")
+  createdAt           DateTime @default(now()) @map("created_at")
+  
+  user1               User     @relation("User1Matches", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2               User     @relation("User2Matches", fields: [user2Id], references: [id], onDelete: Cascade)
+  
+  @@unique([user1Id, user2Id])
+  @@map("matches")
+  @@index([user1Id])
+  @@index([user2Id])
+  @@index([compatibilityScore])
+}
+
