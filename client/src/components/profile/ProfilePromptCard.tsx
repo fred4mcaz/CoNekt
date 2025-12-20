@@ -7,6 +7,8 @@ interface ProfilePromptCardProps {
   onChange: (value: string) => void;
   onSkip: () => void;
   autoSave?: boolean;
+  isSaving?: boolean;
+  onSave?: () => void;
 }
 
 export default function ProfilePromptCard({
@@ -16,22 +18,20 @@ export default function ProfilePromptCard({
   onChange,
   onSkip,
   autoSave = true,
+  isSaving = false,
+  onSave,
 }: ProfilePromptCardProps) {
   const [text, setText] = useState(value || '');
-  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    console.log(`ProfilePromptCard: value prop changed to "${value}"`);
     setText(value || '');
   }, [value]);
 
   const handleChange = (newValue: string) => {
+    console.log(`ProfilePromptCard: user typed "${newValue}"`);
     setText(newValue);
     onChange(newValue);
-    
-    if (autoSave) {
-      setIsSaving(true);
-      setTimeout(() => setIsSaving(false), 500);
-    }
   };
 
   return (
@@ -52,12 +52,27 @@ export default function ProfilePromptCard({
       />
 
       <div className="flex justify-between items-center mt-6">
-        <button
-          onClick={onSkip}
-          className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
-        >
-          Skip for now
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={onSkip}
+            className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+          >
+            Skip for now
+          </button>
+          {onSave && text.trim() && (
+            <button
+              onClick={onSave}
+              disabled={isSaving}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                isSaving
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-green-600 text-white hover:bg-green-700'
+              }`}
+            >
+              {isSaving ? 'Saving...' : 'Save Answer'}
+            </button>
+          )}
+        </div>
         {text.trim() && (
           <span className="text-sm text-gray-500">
             {text.split(/\s+/).filter(w => w.length > 0).length} words
@@ -67,4 +82,5 @@ export default function ProfilePromptCard({
     </div>
   );
 }
+
 

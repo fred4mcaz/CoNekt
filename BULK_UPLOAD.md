@@ -53,22 +53,26 @@ Your personality JSON files should follow this format. **Only `id` is required**
 ### Expected JSON Fields
 
 #### Required Fields
+
 - **`id`** (string): Unique identifier for the personality. Used to generate name and email.
   - Example: `"person01"` → Name: "Person 01", Email: `person01@conekt.test`
 
 #### Optional Fields
 
 **Basic Information:**
+
 - `age` (number): Age of the person
 - `gender` (string): Gender identity
 - `nationality` (string): Nationality
 - `cultural_upbringing` (string): Cultural background/upbringing
 
 **Career:**
+
 - `career` (string): Current career or profession
 - `industry` (string): Industry they work in
 
 **Interests & Preferences:**
+
 - `hobbies` (string): Hobbies and activities
 - `interests` (string): General interests
 - `favorite_books` (array of strings): List of favorite books
@@ -78,6 +82,7 @@ Your personality JSON files should follow this format. **Only `id` is required**
 - `keystone_values` (array of strings): Core values
 
 **Philosophy & Goals:**
+
 - `life_philosophy` (string): Personal life philosophy
 - `looking_for_in_a_friend` (string): What they're looking for in connections
 - `relationship_goals` (string): Goals for relationships/connections
@@ -88,7 +93,8 @@ Your personality JSON files should follow this format. **Only `id` is required**
 
 - **Arrays are converted to strings**: Fields like `favorite_books`, `favorite_movies`, `keystone_values` can be arrays and will be automatically converted to comma-separated strings (e.g., `["Book 1", "Book 2"]` → `"Book 1, Book 2"`)
 
-- **Name & Email Generation**: 
+- **Name & Email Generation**:
+
   - `id: "person01"` → Name: `"Person 01"`, Email: `"person01@conekt.test"`
   - `id: "person42"` → Name: `"Person 42"`, Email: `"person42@conekt.test"`
 
@@ -110,6 +116,7 @@ The simplest valid JSON file only needs an `id`:
 ```
 
 This will create a user with:
+
 - Name: "Person 01"
 - Email: "person01@conekt.test"
 - Password: "password123" (default)
@@ -118,6 +125,7 @@ This will create a user with:
 ### Output
 
 The script provides a summary:
+
 - ✅ Successfully imported profiles
 - ⏭️ Skipped profiles (already exist)
 - ❌ Errors (with details)
@@ -179,6 +187,7 @@ POST /api/users/bulk
 ### Field Support
 
 The API accepts both formats:
+
 - Database format: `favoriteBooks`, `whatImLookingFor`, etc.
 - Personality format: `favorite_books`, `looking_for_in_a_friend`, etc.
 
@@ -207,18 +216,20 @@ curl -X POST http://localhost:3001/api/users/bulk \
 - **Default Password**: When using the import script, all users get the password `password123`. Change this after import for production use.
 - **Email Uniqueness**: The system will skip profiles with emails that already exist in the database.
 - **Profile Completeness**: Automatically calculated based on filled fields.
-- **Required Fields**: 
+- **Required Fields**:
   - For API: `name` and `email` are required
   - For script: `id` is required (name and email are generated)
 
 ## Troubleshooting
 
 ### Script can't find personalities directory
+
 Make sure you're running the script from the `server/` directory and that the `personalities/` directory exists at the project root.
 
 ### Duplicate email errors
+
 The script automatically skips existing users. If you want to update existing profiles, use the update endpoint instead.
 
 ### Array fields not working
-Arrays are automatically converted to comma-separated strings. If you need to preserve array format, you'll need to modify the schema and import logic.
 
+Arrays are automatically converted to comma-separated strings. If you need to preserve array format, you'll need to modify the schema and import logic.

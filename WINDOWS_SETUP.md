@@ -58,7 +58,10 @@ psql -U postgres -c "CREATE DATABASE conekt;"
    JWT_SECRET="any-random-string-here"
    PORT=3001
    FRONTEND_URL="http://localhost:5173"
+   OPENAI_API_KEY="your-openai-api-key-here"
    ```
+
+   Get your OpenAI API key from https://platform.openai.com/api-keys
 
    Replace `YOUR_PASSWORD` with your PostgreSQL password (or remove `:YOUR_PASSWORD` if no password).
 

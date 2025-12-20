@@ -4,26 +4,65 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { Match } from '../types/user';
 import MatchCard from '../components/matches/MatchCard';
+import Header from '../components/Header';
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Check if user has completed minimum profile requirements
   useEffect(() => {
+    if (user) {
+      const completedQuestions = [
+        'relationshipGoals',
+        'currentFocus',
+        'connectionValue',
+        'currentObsession',
+        'endlessTopic',
+        'curiousThoughts',
+        'energizingConversations',
+        'excitedInConversation',
+        'conversationComfort',
+        'handlingTension',
+        'presenceTriggers',
+        'groundingPractices',
+        'patternsToMoveBeyond',
+        'growthThroughChallenge',
+        'connectionComfortLevel',
+        'buildExploreCreate',
+        'closingOffTriggers',
+        'feelingMostMyself'
+      ].filter(key => {
+        const value = user[key as keyof typeof user];
+        return value && value.toString().trim().length > 0;
+      }).length;
+
+      const minimumRequired = 5;
+      if (completedQuestions < minimumRequired) {
+        navigate('/profile');
+        return;
+      }
+    }
+
     fetchMatches();
-  }, []);
+  }, [user, navigate]);
 
   const fetchMatches = async () => {
     try {
       setLoading(true);
+      console.log('Fetching matches...');
       const response = await api.get<{ matches: Match[] }>('/matches');
+      console.log('Matches response:', response.data);
       setMatches(response.data.matches);
+      setError(''); // Clear any previous errors
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to fetch matches');
       console.error('Error fetching matches:', err);
+      const errorMessage = err.response?.data?.error || 'Failed to fetch matches';
+      setError(errorMessage);
+      console.error('Error message:', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -43,33 +82,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">CoNekt</h1>
-              {user && (
-                <p className="text-gray-600">Welcome back, {user.name}! 👋</p>
-              )}
-            </div>
-            <div className="flex gap-4 items-center">
-              <button
-                onClick={() => navigate('/profile')}
-                className="px-4 py-2 text-indigo-600 hover:text-indigo-700 font-medium"
-              >
-                Edit Profile
-              </button>
-              <button
-                onClick={logout}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        title="CoNekt"
+        showProfileButton={true}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -127,4 +143,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
 

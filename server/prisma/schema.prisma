@@ -44,6 +44,25 @@ model User {
   relationshipGoals         String?  @map("relationship_goals") @db.Text
   preferredCommunicationStyle String? @map("preferred_communication_style") @db.Text
   availability              String?  @db.Text
+
+  // New profile questions
+  currentFocus              String?  @map("current_focus") @db.Text
+  connectionValue           String?  @map("connection_value") @db.Text
+  currentObsession          String?  @map("current_obsession") @db.Text
+  endlessTopic              String?  @map("endless_topic") @db.Text
+  curiousThoughts           String?  @map("curious_thoughts") @db.Text
+  energizingConversations   String?  @map("energizing_conversations") @db.Text
+  excitedInConversation     String?  @map("excited_in_conversation") @db.Text
+  conversationComfort       String?  @map("conversation_comfort") @db.Text
+  handlingTension           String?  @map("handling_tension") @db.Text
+  presenceTriggers          String?  @map("presence_triggers") @db.Text
+  groundingPractices        String?  @map("grounding_practices") @db.Text
+  patternsToMoveBeyond      String?  @map("patterns_to_move_beyond") @db.Text
+  growthThroughChallenge    String?  @map("growth_through_challenge") @db.Text
+  connectionComfortLevel    String?  @map("connection_comfort_level") @db.Text
+  buildExploreCreate        String?  @map("build_explore_create") @db.Text
+  closingOffTriggers        String?  @map("closing_off_triggers") @db.Text
+  feelingMostMyself         String?  @map("feeling_most_myself") @db.Text
   
   profileCompleteness       Int      @default(0) @map("profile_completeness")
   isActive                  Boolean  @default(true) @map("is_active")

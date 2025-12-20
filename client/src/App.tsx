@@ -19,6 +19,50 @@ function PrivateRoute({ children }: { children: React.ReactElement }) {
   return user ? children : <Navigate to="/login" />;
 }
 
+function RootRedirect() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  // Check if user has completed minimum profile requirements
+  const completedQuestions = [
+    'relationshipGoals',
+    'currentFocus',
+    'connectionValue',
+    'currentObsession',
+    'endlessTopic',
+    'curiousThoughts',
+    'energizingConversations',
+    'excitedInConversation',
+    'conversationComfort',
+    'handlingTension',
+    'presenceTriggers',
+    'groundingPractices',
+    'patternsToMoveBeyond',
+    'growthThroughChallenge',
+    'connectionComfortLevel',
+    'buildExploreCreate',
+    'closingOffTriggers',
+    'feelingMostMyself'
+  ].filter(key => {
+    const value = user[key as keyof typeof user];
+    return value && value.toString().trim().length > 0;
+  }).length;
+
+  const minimumRequired = 5;
+  return completedQuestions >= minimumRequired ? <Navigate to="/dashboard" /> : <Navigate to="/profile" />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -40,7 +84,7 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="/" element={<RootRedirect />} />
     </Routes>
   );
 }
@@ -56,4 +100,5 @@ function App() {
 }
 
 export default App;
+
 

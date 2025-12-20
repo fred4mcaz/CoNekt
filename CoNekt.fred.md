@@ -377,9 +377,9 @@ For each matched pair, generate:
    - No dropdowns, no constraints
    - Encouraging tone throughout
 
-4. **"What are you looking for?"**
+4. **"What kind of connection are you open to?"**
 
-   - Open prompt: "Friends? Cofounders? Study partners? Mentors? Tell us what kind of connections you're seeking."
+   - Open prompt: "Friendship, co-builders, mentors, mentees, dating, exploration - what connections are you open to?"
    - User writes freely, no checkboxes or limits
 
 5. **"What matters most to you?"**
@@ -456,7 +456,7 @@ Each card shows:
 
 - **Conversation Starters Section** (New Feature):
 
-  - Title: "Questions to Spark Connection"
+  - Title: "Questions To Get Things Started"
   - 3-5 thought-provoking questions tailored to both users
   - Questions are designed to:
     - Explore shared interests deeply

@@ -59,7 +59,9 @@ function calculateCompleteness(user: any): number {
   return Math.round((filled / fields.length) * 100);
 }
 
-async function transformPersonalityToUser(personality: PersonalityData): Promise<any> {
+async function transformPersonalityToUser(
+  personality: PersonalityData
+): Promise<any> {
   // Generate a name from the ID (e.g., "person01" -> "Person 01")
   const name = personality.id
     .replace(/person/i, "")
@@ -226,4 +228,3 @@ async function bulkImport() {
 
 // Run the import
 bulkImport();
-

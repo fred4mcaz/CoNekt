@@ -2,6 +2,10 @@ import express from "express";
 import prisma from "../utils/prisma";
 import { authenticateToken, AuthRequest } from "../middleware/auth";
 import { findMatches } from "../services/matching";
+import {
+  generateRecommendedActivity,
+  generateConversationStarters,
+} from "../services/llm";
 
 const router = express.Router();
 
@@ -154,6 +158,56 @@ router.get("/:userId", authenticateToken, async (req: AuthRequest, res) => {
   } catch (error) {
     console.error("Get match details error:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Test endpoint for LLM functionality (no auth required)
+router.get("/test/llm", async (req, res) => {
+  try {
+    console.log("🧪 Testing LLM functionality via API endpoint");
+
+    // Test users
+    const user1 = {
+      name: "Alice",
+      career: "Software Engineer",
+      interests: "Reading, hiking, technology",
+      keystoneValues: "Curiosity, honesty, growth",
+      hobbies: "Rock climbing, coding side projects",
+      favoriteBooks: "Sapiens, Clean Code",
+      lifePhilosophy: "Continuous learning and helping others",
+    };
+
+    const user2 = {
+      name: "Bob",
+      career: "UX Designer",
+      interests: "Design, psychology, art",
+      keystoneValues: "Empathy, creativity, balance",
+      hobbies: "Drawing, meditation, travel",
+      favoriteBooks: "The Design of Everyday Things, Thinking Fast and Slow",
+      lifePhilosophy: "Design should serve human needs",
+    };
+
+    const activity = await generateRecommendedActivity(user1, user2);
+    const conversationStarters = await generateConversationStarters(
+      user1,
+      user2
+    );
+
+    res.json({
+      success: true,
+      message: "LLM test completed",
+      data: {
+        activity,
+        conversationStarters,
+      },
+    });
+  } catch (error) {
+    console.error("LLM test failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "LLM test failed",
+      error: error.message,
+    });
   }
 });
 

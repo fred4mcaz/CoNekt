@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signup: (email: string, password: string, name: string) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   updateUser: (data: Partial<User>) => Promise<void>;
 }
@@ -27,13 +27,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fetchUser = async () => {
+  const fetchUser = async (): Promise<User | null> => {
     try {
+      setLoading(true);
       const response = await api.get<{ user: User }>('/users/me');
-      setUser(response.data.user);
+      const user = response.data.user;
+      setUser(user);
+      return user;
     } catch (error) {
       console.error('Failed to fetch user:', error);
       authService.logout();
+      return null;
     } finally {
       setLoading(false);
     }
@@ -44,9 +48,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(response.user);
   };
 
-  const login = async (email: string, password: string) => {
-    const response = await authService.login(email, password);
-    setUser(response.user);
+  const login = async (email: string, password: string): Promise<User> => {
+    await authService.login(email, password);
+    // Fetch full user profile to ensure we have all profile fields
+    const user = await fetchUser();
+    if (!user) {
+      throw new Error('Failed to fetch user profile after login');
+    }
+    return user;
   };
 
   const logout = () => {
@@ -78,4 +87,5 @@ export function useAuth() {
   }
   return context;
 }
+
 

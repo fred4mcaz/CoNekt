@@ -54,12 +54,15 @@ CoNekt is a web application that uses machine learning to match users based on d
    cp server/.env.example server/.env
    ```
 
-   Update `server/.env` with your database connection string:
+   Update `server/.env` with your database connection string and OpenAI API key:
 
    ```
    DATABASE_URL="postgresql://user:password@localhost:5432/conekt?schema=public"
    JWT_SECRET="your-secret-key-here"
+   OPENAI_API_KEY="your-openai-api-key-here"
    ```
+
+   Get your OpenAI API key from https://platform.openai.com/api-keys
 
 4. **Set up Prisma**
 

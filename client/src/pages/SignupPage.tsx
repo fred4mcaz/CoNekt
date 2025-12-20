@@ -18,7 +18,7 @@ export default function SignupPage() {
 
     try {
       await signup(email, password, name);
-      navigate('/dashboard');
+      navigate('/profile');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Signup failed');
     } finally {
@@ -109,4 +109,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
 

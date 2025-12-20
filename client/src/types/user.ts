@@ -25,6 +25,24 @@ export interface User {
   relationshipGoals?: string | null;
   preferredCommunicationStyle?: string | null;
   availability?: string | null;
+  // New profile questions
+  currentFocus?: string | null;
+  connectionValue?: string | null;
+  currentObsession?: string | null;
+  endlessTopic?: string | null;
+  curiousThoughts?: string | null;
+  energizingConversations?: string | null;
+  excitedInConversation?: string | null;
+  conversationComfort?: string | null;
+  handlingTension?: string | null;
+  presenceTriggers?: string | null;
+  groundingPractices?: string | null;
+  patternsToMoveBeyond?: string | null;
+  growthThroughChallenge?: string | null;
+  connectionComfortLevel?: string | null;
+  buildExploreCreate?: string | null;
+  closingOffTriggers?: string | null;
+  feelingMostMyself?: string | null;
   profileCompleteness?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -37,4 +55,5 @@ export interface Match {
   recommendedActivity: string;
   conversationStarters: string[];
 }
+
 

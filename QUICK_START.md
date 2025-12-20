@@ -57,3 +57,5 @@ npm run dev
 - Kill existing Node processes: `taskkill /F /IM node.exe`
 - Or change ports in `server/.env` and `client/vite.config.ts`
 
+
+

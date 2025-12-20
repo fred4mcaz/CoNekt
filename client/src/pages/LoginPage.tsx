@@ -17,7 +17,8 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      navigate('/dashboard');
+      // Navigate to root, which will redirect to dashboard or profile based on completion
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed');
     } finally {
@@ -91,4 +92,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
 
