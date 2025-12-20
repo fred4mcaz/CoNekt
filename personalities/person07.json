@@ -1,0 +1,22 @@
+{
+  "id": "person07",
+  "age": 22,
+  "gender": "male",
+  "nationality": "Indian",
+  "favorite_books": [
+    "Clean Code",
+    "The Pragmatic Programmer",
+    "Surely You're Joking, Mr. Feynman!"
+  ],
+  "favorite_movies": [
+    "The Imitation Game",
+    "Inception",
+    "3 Idiots"
+  ],
+  "keystone_values": [
+    "learning",
+    "problem-solving",
+    "merit"
+  ],
+  "looking_for_in_a_friend": "Someone curious who enjoys building things, asking hard questions, and improving through feedback."
+}

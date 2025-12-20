@@ -1,0 +1,22 @@
+{
+  "id": "person09",
+  "age": 28,
+  "gender": "female",
+  "nationality": "South African",
+  "favorite_books": [
+    "Born a Crime",
+    "Half of a Yellow Sun",
+    "Educated"
+  ],
+  "favorite_movies": [
+    "Hotel Rwanda",
+    "The Help",
+    "Moonlight"
+  ],
+  "keystone_values": [
+    "justice",
+    "compassion",
+    "courage"
+  ],
+  "looking_for_in_a_friend": "Someone principled who stands up for others and is willing to confront uncomfortable realities."
+}

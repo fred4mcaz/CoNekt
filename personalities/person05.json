@@ -1,0 +1,22 @@
+{
+  "id": "person05",
+  "age": 31,
+  "gender": "male",
+  "nationality": "Brazilian",
+  "favorite_books": [
+    "The Alchemist",
+    "One Hundred Years of Solitude",
+    "Atomic Habits"
+  ],
+  "favorite_movies": [
+    "City of God",
+    "Whiplash",
+    "The Pursuit of Happyness"
+  ],
+  "keystone_values": [
+    "resilience",
+    "optimism",
+    "personal agency"
+  ],
+  "looking_for_in_a_friend": "Someone positive and driven who believes improvement is possible through effort and consistency."
+}

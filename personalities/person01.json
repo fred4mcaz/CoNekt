@@ -1,0 +1,22 @@
+{
+  "id": "person01",
+  "age": 29,
+  "gender": "female",
+  "nationality": "Canadian",
+  "favorite_books": [
+    "Sapiens",
+    "Pride and Prejudice",
+    "Thinking, Fast and Slow"
+  ],
+  "favorite_movies": [
+    "Arrival",
+    "Her",
+    "The Social Network"
+  ],
+  "keystone_values": [
+    "intellectual honesty",
+    "curiosity",
+    "empathy"
+  ],
+  "looking_for_in_a_friend": "Someone who enjoys deep conversations, challenges assumptions respectfully, and values emotional awareness."
+}

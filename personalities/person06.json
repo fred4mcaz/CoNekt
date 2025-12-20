@@ -1,0 +1,22 @@
+{
+  "id": "person06",
+  "age": 47,
+  "gender": "female",
+  "nationality": "Japanese",
+  "favorite_books": [
+    "Norwegian Wood",
+    "The Book of Five Rings",
+    "Quiet"
+  ],
+  "favorite_movies": [
+    "Tokyo Story",
+    "Lost in Translation",
+    "Spirited Away"
+  ],
+  "keystone_values": [
+    "humility",
+    "aesthetic simplicity",
+    "respect"
+  ],
+  "looking_for_in_a_friend": "Someone calm, attentive, and considerate, who values silence as much as conversation."
+}

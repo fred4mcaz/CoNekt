@@ -1,0 +1,22 @@
+{
+  "id": "person02",
+  "age": 42,
+  "gender": "male",
+  "nationality": "American",
+  "favorite_books": [
+    "Meditations",
+    "The Art of War",
+    "Man's Search for Meaning"
+  ],
+  "favorite_movies": [
+    "Gladiator",
+    "Master and Commander",
+    "No Country for Old Men"
+  ],
+  "keystone_values": [
+    "discipline",
+    "responsibility",
+    "self-mastery"
+  ],
+  "looking_for_in_a_friend": "A reliable person who keeps their word, can handle uncomfortable truths, and values competence over status."
+}

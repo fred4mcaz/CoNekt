@@ -1,0 +1,22 @@
+{
+  "id": "person10",
+  "age": 55,
+  "gender": "male",
+  "nationality": "Israeli",
+  "favorite_books": [
+    "Start-Up Nation",
+    "Antifragile",
+    "The Innovator's Dilemma"
+  ],
+  "favorite_movies": [
+    "Moneyball",
+    "The Big Short",
+    "Margin Call"
+  ],
+  "keystone_values": [
+    "adaptability",
+    "strategic thinking",
+    "truth over comfort"
+  ],
+  "looking_for_in_a_friend": "Someone intellectually resilient who can handle risk, ambiguity, and blunt conversations."
+}

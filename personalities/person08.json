@@ -1,0 +1,22 @@
+{
+  "id": "person08",
+  "age": 39,
+  "gender": "male",
+  "nationality": "British",
+  "favorite_books": [
+    "The Road",
+    "Brave New World",
+    "The Righteous Mind"
+  ],
+  "favorite_movies": [
+    "Children of Men",
+    "Tinker Tailor Soldier Spy",
+    "The Dark Knight"
+  ],
+  "keystone_values": [
+    "skepticism",
+    "integrity",
+    "independence"
+  ],
+  "looking_for_in_a_friend": "A grounded realist who can disagree rationally and prefers evidence over ideology."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "person04",
+  "age": 35,
+  "gender": "female",
+  "nationality": "German",
+  "favorite_books": [
+    "The Brothers Karamazov",
+    "Gödel, Escher, Bach",
+    "The Moral Landscape"
+  ],
+  "favorite_movies": [
+    "Das Leben der Anderen",
+    "A Serious Man",
+    "Amadeus"
+  ],
+  "keystone_values": [
+    "truth-seeking",
+    "moral clarity",
+    "intellectual rigor"
+  ],
+  "looking_for_in_a_friend": "A thoughtful person who values precision in language, ethical consistency, and long-form discussion."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "person03",
+  "age": 24,
+  "gender": "non-binary",
+  "nationality": "Australian",
+  "favorite_books": [
+    "The Left Hand of Darkness",
+    "Dune",
+    "Never Let Me Go"
+  ],
+  "favorite_movies": [
+    "Ex Machina",
+    "Blade Runner 2049",
+    "Annihilation"
+  ],
+  "keystone_values": [
+    "authenticity",
+    "creativity",
+    "open-mindedness"
+  ],
+  "looking_for_in_a_friend": "Someone who respects individuality, enjoys speculative ideas, and supports personal growth without judgment."
+}
