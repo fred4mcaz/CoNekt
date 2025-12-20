@@ -28,35 +28,41 @@ CoNekt is a web application that uses machine learning to match users based on d
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd CoNekt
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm run install:all
    ```
 
 3. **Set up the database**
-   
+
    Create a PostgreSQL database:
+
    ```bash
    createdb conekt
    ```
 
    Copy the environment file:
+
    ```bash
    cp server/.env.example server/.env
    ```
 
    Update `server/.env` with your database connection string:
+
    ```
    DATABASE_URL="postgresql://user:password@localhost:5432/conekt?schema=public"
    JWT_SECRET="your-secret-key-here"
    ```
 
 4. **Set up Prisma**
+
    ```bash
    cd server
    npm run db:generate
@@ -66,6 +72,7 @@ CoNekt is a web application that uses machine learning to match users based on d
 5. **Start the development servers**
 
    From the root directory:
+
    ```bash
    npm run dev
    ```
@@ -73,6 +80,7 @@ CoNekt is a web application that uses machine learning to match users based on d
    This will start both the backend (port 3001) and frontend (port 5173).
 
    Or start them separately:
+
    ```bash
    # Terminal 1 - Backend
    npm run dev:server
@@ -82,7 +90,7 @@ CoNekt is a web application that uses machine learning to match users based on d
    ```
 
 6. **Open your browser**
-   
+
    Navigate to `http://localhost:5173`
 
 ## Project Structure
@@ -111,17 +119,20 @@ CoNekt/
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/signup` - Create account
 - `POST /api/auth/login` - Login
 - `GET /api/auth/me` - Get current user (basic)
 
 ### User Profile
+
 - `GET /api/users/me` - Get full profile
 - `PUT /api/users/me` - Update profile
 - `GET /api/users/:id` - Get user by ID
 - `GET /api/users/me/completeness` - Get profile completeness
 
 ### Matching
+
 - `GET /api/matches` - Get top 3 matches
 - `POST /api/matches/refresh` - Refresh matches
 - `GET /api/matches/:userId` - Get match details

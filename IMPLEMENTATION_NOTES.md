@@ -3,6 +3,7 @@
 ## What's Been Implemented
 
 ### Backend (Node.js + Express + TypeScript)
+
 - ✅ Authentication system (JWT-based signup/login)
 - ✅ User profile management (all fields optional except name)
 - ✅ PostgreSQL database with Prisma ORM
@@ -12,6 +13,7 @@
 - ✅ RESTful API endpoints
 
 ### Frontend (React + TypeScript + Vite)
+
 - ✅ Interactive profile creation (card-based, conversational)
 - ✅ Beautiful, modern UI with Tailwind CSS
 - ✅ Match display dashboard with profile cards
@@ -24,6 +26,7 @@
 ## Key Features
 
 1. **Interactive Profile Creation**
+
    - Card-based interface (not a traditional form)
    - All fields optional except name
    - Open-ended text fields (no dropdowns)
@@ -31,6 +34,7 @@
    - Progress tracking
 
 2. **Smart Matching**
+
    - Text similarity algorithm
    - Weighted compatibility scoring
    - Considers: values, interests, career, goals, etc.
@@ -44,11 +48,13 @@
 ## Next Steps (Future Enhancements)
 
 1. **ML-Based Matching** (Phase 2)
+
    - Implement embedding generation
    - Use pgvector for vector similarity
    - More sophisticated NLP for profile analysis
 
 2. **Enhanced Features**
+
    - OAuth integration (Google/GitHub)
    - Messaging system
    - Connection requests
@@ -75,4 +81,3 @@
 3. View matches - you should see compatibility scores
 4. Check activity recommendations and conversation starters
 5. Try editing profiles and see matches update
-

@@ -9,11 +9,15 @@
     "build": "cd server && npm run build && cd ../client && npm run build",
     "install:all": "npm install && cd server && npm install && cd ../client && npm install"
   },
-  "keywords": ["matching", "connections", "friends", "networking"],
+  "keywords": [
+    "matching",
+    "connections",
+    "friends",
+    "networking"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
 }
-

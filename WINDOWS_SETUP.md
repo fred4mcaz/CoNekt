@@ -9,12 +9,15 @@ Since `createdb` isn't available on Windows, use one of these methods:
 1. **Open PowerShell or Command Prompt**
 
 2. **Connect to PostgreSQL:**
+
    ```powershell
    psql -U postgres
    ```
+
    (You may be prompted for your PostgreSQL password)
 
 3. **Create the database:**
+
    ```sql
    CREATE DATABASE conekt;
    ```
@@ -41,29 +44,32 @@ psql -U postgres -c "CREATE DATABASE conekt;"
 ## Complete Setup Steps for Windows
 
 1. **Install dependencies:**
+
    ```powershell
    npm run install:all
    ```
 
 2. **Set up environment file:**
-   
+
    The `.env` file should already be created. Open `server/.env` in a text editor and update:
+
    ```env
    DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/conekt?schema=public"
    JWT_SECRET="any-random-string-here"
    PORT=3001
    FRONTEND_URL="http://localhost:5173"
    ```
-   
+
    Replace `YOUR_PASSWORD` with your PostgreSQL password (or remove `:YOUR_PASSWORD` if no password).
 
 3. **Initialize database with Prisma:**
+
    ```powershell
    cd server
    npm run db:generate
    npm run db:push
    ```
-   
+
    This will create the database if it doesn't exist and set up all tables!
 
 4. **Start the servers:**
@@ -75,11 +81,13 @@ psql -U postgres -c "CREATE DATABASE conekt;"
 ## Troubleshooting
 
 ### "psql is not recognized"
+
 - PostgreSQL might not be in your PATH
 - Find PostgreSQL installation (usually `C:\Program Files\PostgreSQL\<version>\bin\`)
 - Add it to PATH, or use full path: `"C:\Program Files\PostgreSQL\15\bin\psql.exe" -U postgres`
 
 ### "Database connection error"
+
 - Make sure PostgreSQL service is running:
   - Press `Win + R`, type `services.msc`, press Enter
   - Find "postgresql" service and make sure it's running
@@ -87,7 +95,7 @@ psql -U postgres -c "CREATE DATABASE conekt;"
 - Try connecting manually: `psql -U postgres -d postgres`
 
 ### "Prisma can't create database"
+
 - Make sure your PostgreSQL user has CREATE DATABASE permission
 - Create database manually using Method 1 or 2 above
 - Then run `npm run db:push` again
-

@@ -7,6 +7,7 @@ Prisma Studio provides a web-based GUI to view and edit your database.
 1. **Open a new terminal/PowerShell window**
 
 2. **Navigate to server directory and run:**
+
    ```powershell
    cd server
    npm run db:studio
@@ -22,21 +23,25 @@ Prisma Studio provides a web-based GUI to view and edit your database.
 ## Method 2: Using psql (Command Line)
 
 1. **Connect to PostgreSQL:**
+
    ```powershell
    psql -U postgres -d conekt
    ```
 
 2. **View all users:**
+
    ```sql
    SELECT id, name, email, created_at FROM users;
    ```
 
 3. **View a specific user's full profile:**
+
    ```sql
    SELECT * FROM users WHERE email = 'user@example.com';
    ```
 
 4. **View matches:**
+
    ```sql
    SELECT * FROM matches;
    ```
@@ -49,12 +54,14 @@ Prisma Studio provides a web-based GUI to view and edit your database.
 ## Method 3: Using a Database GUI Tool
 
 You can use any PostgreSQL client tool:
+
 - **pgAdmin** (official PostgreSQL tool)
 - **DBeaver** (free, cross-platform)
 - **TablePlus** (paid, beautiful UI)
 - **DataGrip** (JetBrains IDE)
 
 Connection details:
+
 - Host: `localhost`
 - Port: `5432`
 - Database: `conekt`
@@ -64,17 +71,19 @@ Connection details:
 ## Quick Commands
 
 ### View all users (quick check)
+
 ```powershell
 psql -U postgres -d conekt -c "SELECT id, name, email, created_at FROM users;"
 ```
 
 ### Count users
+
 ```powershell
 psql -U postgres -d conekt -c "SELECT COUNT(*) FROM users;"
 ```
 
 ### View user profiles
+
 ```powershell
 psql -U postgres -d conekt -c "SELECT name, email, profile_completeness, career, interests, keystone_values FROM users;"
 ```
-

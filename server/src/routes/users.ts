@@ -1,11 +1,11 @@
-import express from 'express';
-import prisma from '../utils/prisma';
-import { authenticateToken, AuthRequest } from '../middleware/auth';
+import express from "express";
+import prisma from "../utils/prisma";
+import { authenticateToken, AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
 
 // Get current user's full profile
-router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
+router.get("/me", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
@@ -38,31 +38,34 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
         availability: true,
         profileCompleteness: true,
         createdAt: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     res.json({ user });
   } catch (error) {
-    console.error('Get user error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Get user error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Update current user's profile
-router.put('/me', authenticateToken, async (req: AuthRequest, res) => {
+router.put("/me", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const updateData: any = {
       ...req.body,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Calculate completeness
-    updateData.profileCompleteness = calculateCompleteness({ name: req.body.name || '', ...req.body });
+    updateData.profileCompleteness = calculateCompleteness({
+      name: req.body.name || "",
+      ...req.body,
+    });
 
     const user = await prisma.user.update({
       where: { id: req.userId },
@@ -95,19 +98,19 @@ router.put('/me', authenticateToken, async (req: AuthRequest, res) => {
         preferredCommunicationStyle: true,
         availability: true,
         profileCompleteness: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
 
     res.json({ user });
   } catch (error) {
-    console.error('Update user error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Update user error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Get user by ID (for viewing profiles)
-router.get('/:id', authenticateToken, async (req: AuthRequest, res) => {
+router.get("/:id", authenticateToken, async (req: AuthRequest, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.params.id },
@@ -126,57 +129,73 @@ router.get('/:id', authenticateToken, async (req: AuthRequest, res) => {
         lifePhilosophy: true,
         whatImLookingFor: true,
         hobbies: true,
-        preferredCommunicationStyle: true
-      }
+        preferredCommunicationStyle: true,
+      },
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     res.json({ user });
   } catch (error) {
-    console.error('Get user by ID error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Get user by ID error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Get profile completeness
-router.get('/me/completeness', authenticateToken, async (req: AuthRequest, res) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: { profileCompleteness: true }
-    });
+router.get(
+  "/me/completeness",
+  authenticateToken,
+  async (req: AuthRequest, res) => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: req.userId },
+        select: { profileCompleteness: true },
+      });
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json({ completeness: user.profileCompleteness });
+    } catch (error) {
+      console.error("Get completeness error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    res.json({ completeness: user.profileCompleteness });
-  } catch (error) {
-    console.error('Get completeness error:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
-});
+);
 
 function calculateCompleteness(user: any): number {
   const fields = [
-    'name', 'age', 'culturalUpbringing', 'career', 'favoriteBooks',
-    'favoriteAuthors', 'interests', 'keystoneValues', 'relationshipGoals',
-    'lifePhilosophy', 'hobbies', 'whatImLookingFor'
+    "name",
+    "age",
+    "culturalUpbringing",
+    "career",
+    "favoriteBooks",
+    "favoriteAuthors",
+    "interests",
+    "keystoneValues",
+    "relationshipGoals",
+    "lifePhilosophy",
+    "hobbies",
+    "whatImLookingFor",
   ];
-  
+
   let filled = 0;
-  fields.forEach(field => {
+  fields.forEach((field) => {
     const value = user[field];
-    if (value !== null && value !== undefined && String(value).trim().length > 0) {
+    if (
+      value !== null &&
+      value !== undefined &&
+      String(value).trim().length > 0
+    ) {
       filled++;
     }
   });
-  
+
   return Math.round((filled / fields.length) * 100);
 }
 
 export default router;
-
